@@ -53,9 +53,11 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    # Use DATABASE_URI from config/database.py
-    from config.database import DATABASE_URI
-    url = DATABASE_URI
+    url = config.get_main_option("sqlalchemy.url")
+    if not url:
+        # Use DATABASE_URI from config/database.py
+        from config.database import DATABASE_URI
+        url = DATABASE_URI
 
     context.configure(
         url=url,
@@ -75,9 +77,16 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    # Use existing engine from config/database.py
-    from config.database import engine
-    connectable = engine
+    if config.get_main_option("sqlalchemy.url"):
+        connectable = engine_from_config(
+            config.get_section(config.config_ini_section),
+            prefix="sqlalchemy.",
+            poolclass=pool.NullPool,
+        )
+    else:
+        # Use existing engine from config/database.py
+        from config.database import engine
+        connectable = engine
 
     with connectable.connect() as connection:
         context.configure(

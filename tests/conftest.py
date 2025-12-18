@@ -18,10 +18,12 @@ os.environ['REDIS_PORT'] = '6379'
 
 from models.base_model import base as Base
 from main import create_fastapi_app
+from config.database import get_db
 
 
 # Test database URL
-TEST_DATABASE_URL = "sqlite:///:memory:"  # In-memory SQLite for fast testing
+# Use a file-backed SQLite DB for tests to avoid in-memory connection visibility issues
+TEST_DATABASE_URL = "sqlite:///./test_db.sqlite"
 
 
 @pytest.fixture(scope="session")
@@ -32,6 +34,15 @@ def engine():
         connect_args={"check_same_thread": False},  # SQLite specific
         echo=False
     )
+    # Ensure all model modules are imported so metadata includes all tables
+    import models.client
+    import models.category
+    import models.product
+    import models.address
+    import models.bill
+    import models.order
+    import models.order_detail
+    import models.review
     Base.metadata.create_all(bind=test_engine)
     yield test_engine
     Base.metadata.drop_all(bind=test_engine)
@@ -69,9 +80,8 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
             yield db_session
         finally:
             pass
-
-    # Note: You may need to implement dependency override in your app
-    # app.dependency_overrides[get_db] = override_get_db
+    # Override the app's get_db dependency so tests use the in-memory DB session
+    app.dependency_overrides[get_db] = override_get_db
 
     with TestClient(app) as test_client:
         yield test_client

@@ -40,3 +40,6 @@ pytest==7.4.3
 pytest-cov==4.1.0
 pytest-asyncio==0.21.1
 httpx==0.25.1
+alembic==1.12.0
+# Optional: password hashing utilities for production (not required for plaintext comparison)
+passlib[bcrypt]==1.7.4

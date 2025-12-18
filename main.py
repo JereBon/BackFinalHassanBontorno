@@ -30,6 +30,7 @@ from controllers.order_detail_controller import OrderDetailController
 from controllers.product_controller import ProductController
 from controllers.review_controller import ReviewController
 from controllers.health_check import router as health_check_controller
+from controllers.auth_controller import router as auth_controller
 from repositories.base_repository_impl import InstanceNotFoundError
 
 
@@ -58,6 +59,15 @@ def create_fastapi_app() -> FastAPI:
             content={"message": str(exc)},
         )
 
+    @fastapi_app.exception_handler(Exception)
+    async def global_exception_handler(request, exc):
+        """Handle all other exceptions to see the error in frontend."""
+        logger.error(f"Global exception: {exc}")
+        return JSONResponse(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            content={"detail": str(exc)},
+        )
+
     client_controller = ClientController()
     fastapi_app.include_router(client_controller.router, prefix="/clients")
 
@@ -83,6 +93,8 @@ def create_fastapi_app() -> FastAPI:
     fastapi_app.include_router(category_controller.router, prefix="/categories")
 
     fastapi_app.include_router(health_check_controller, prefix="/health_check")
+    # Authentication routes
+    fastapi_app.include_router(auth_controller, prefix="/auth")
 
     # Add middleware (LIFO order - last added runs first)
     # Request ID middleware runs FIRST (innermost) to capture all logs
@@ -90,7 +102,8 @@ def create_fastapi_app() -> FastAPI:
     logger.info("✅ Request ID middleware enabled (distributed tracing)")
 
     # CORS Configuration
-    cors_origins = os.getenv("CORS_ORIGINS", "*").split(",")
+    # Default to allowing the frontend running on localhost:3000
+    cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
     fastapi_app.add_middleware(
         CORSMiddleware,
         allow_origins=cors_origins if cors_origins != ["*"] else ["*"],
@@ -141,6 +154,10 @@ def create_fastapi_app() -> FastAPI:
     return fastapi_app
 
 
+# Creamos la instancia de la app a nivel global para que Uvicorn la encuentre
+app = create_fastapi_app()
+
+
 def run_app(fastapi_app: FastAPI):
     uvicorn.run(fastapi_app, host="0.0.0.0", port=8000)
 
@@ -150,5 +167,4 @@ if __name__ == "__main__":
     create_tables()
 
     # Create and run FastAPI application
-    app = create_fastapi_app()
     run_app(app)
