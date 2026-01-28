@@ -36,6 +36,7 @@ def authenticate_user(db: Session, email: str, password: str) -> LoginResponse:
     token = str(uuid4())
 
     user_out = UserOut(
+        id_key=client.id_key,
         email=client.email,
         name=getattr(client, "name", None),
         lastname=getattr(client, "lastname", None),
