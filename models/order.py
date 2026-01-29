@@ -10,8 +10,8 @@ class OrderModel(BaseModel):
 
     date = Column(DateTime, index=True)
     total = Column(Float)
-    delivery_method = Column(Enum(DeliveryMethod), index=True)
-    status = Column(Enum(Status), index=True)
+    delivery_method = Column(Integer)
+    status = Column(Integer, index=True)
     client_id = Column(Integer, ForeignKey('clients.id_key'), index=True)
     bill_id = Column(Integer, ForeignKey('bills.id_key'), index=True)
 

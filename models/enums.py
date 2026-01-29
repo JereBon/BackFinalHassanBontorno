@@ -3,17 +3,17 @@ Centralized Enums Module
 
 Contains all shared enumeration types used across models and schemas.
 """
-from enum import Enum
+from enum import IntEnum
 
 
-class DeliveryMethod(Enum):
+class DeliveryMethod(IntEnum):
     """Order delivery method options"""
     DRIVE_THRU = 1
     ON_HAND = 2
     HOME_DELIVERY = 3
 
 
-class Status(Enum):
+class Status(IntEnum):
     """Order status options"""
     PENDING = 1
     IN_PROGRESS = 2
@@ -21,7 +21,7 @@ class Status(Enum):
     CANCELED = 4
 
 
-class PaymentType(Enum):
+class PaymentType(IntEnum):
     """Bill payment type options"""
     CASH = 1
     CARD = 2

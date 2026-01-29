@@ -253,3 +253,10 @@ class OrderDetailService(BaseServiceImpl):
         except Exception as e:
             logger.error(f"Error deleting order detail {id_key}: {e}")
             raise
+
+    def get_by_order_id(self, order_id: int) -> list[OrderDetailSchema]:
+        """Get all details for a specific order."""
+        from sqlalchemy import select
+        stmt = select(OrderDetailModel).where(OrderDetailModel.order_id == order_id)
+        models = self._repository.session.scalars(stmt).all()
+        return [OrderDetailSchema.model_validate(model) for model in models]

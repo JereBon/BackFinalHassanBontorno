@@ -13,3 +13,7 @@ class AddressService(BaseServiceImpl):
             schema=AddressSchema,
             db=db
         )
+
+    def get_by_client(self, client_id: int):
+        """Get addresses by client ID."""
+        return self.repository.get_by_client(client_id)

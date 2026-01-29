@@ -47,3 +47,9 @@ class OrderDetailController(BaseControllerImpl):
             """
             service = self.service_factory(db)
             return service.save(schema_in)
+
+        @self.router.get("/by_order/{order_id}", response_model=List[OrderDetailSchema])
+        async def get_by_order(order_id: int, db: Session = Depends(get_db)):
+            """Get all order details for a specific order."""
+            service = self.service_factory(db)
+            return service.get_by_order_id(order_id)

@@ -11,3 +11,7 @@ class AddressRepository(BaseRepositoryImpl):
 
     def __init__(self, db: Session):
         super().__init__(AddressModel, AddressSchema, db)
+
+    def get_by_client(self, client_id: int):
+        """Get all addresses for a specific client."""
+        return self.session.query(self.model).filter(self.model.client_id == client_id).all()

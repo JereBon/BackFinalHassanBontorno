@@ -12,7 +12,7 @@ class BillModel(BaseModel):
     discount = Column(Float)
     date = Column(Date)
     total = Column(Float)
-    payment_type = Column(Enum(PaymentType))
+    payment_type = Column(Integer)
     client_id = Column(Integer, ForeignKey('clients.id_key'), index=True)  # ✅ Added
 
     # Relationships
