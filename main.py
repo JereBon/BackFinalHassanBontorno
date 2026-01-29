@@ -123,6 +123,9 @@ def create_fastapi_app() -> FastAPI:
         """Run on application startup"""
         logger.info("🚀 Starting FastAPI E-commerce API...")
 
+        # Ensure tables are created
+        create_tables()
+
         # Check Redis connection
         if check_redis_connection():
             logger.info("✅ Redis cache is available")

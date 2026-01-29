@@ -3,6 +3,8 @@ from pydantic import Field
 
 from schemas.base_schema import BaseSchema
 
+from schemas.client_schema import PublicClientSchema
+
 if TYPE_CHECKING:
     from schemas.product_schema import ProductSchema
 
@@ -30,3 +32,10 @@ class ReviewSchema(BaseSchema):
     )
 
     product: Optional['ProductSchema'] = None
+
+    client_id: int = Field(
+        ...,
+        description="Client ID reference (required)"
+    )
+
+    client: Optional[PublicClientSchema] = None

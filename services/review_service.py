@@ -17,3 +17,11 @@ class ReviewService(BaseServiceImpl):
             schema=ReviewSchema,
             db=db
         )
+
+    def get_by_product_id(self, product_id: int) -> list[ReviewSchema]:
+        """Get all reviews for a specific product."""
+        from sqlalchemy import select
+        from sqlalchemy.orm import joinedload
+        stmt = select(ReviewModel).where(ReviewModel.product_id == product_id).options(joinedload(ReviewModel.client))
+        models = self._repository.session.scalars(stmt).all()
+        return [ReviewSchema.model_validate(model) for model in models]

@@ -21,3 +21,8 @@ class ReviewModel(BaseModel):
     product = relationship(
         'ProductModel', back_populates='reviews', lazy='select',
         )
+
+    client_id = Column(Integer, ForeignKey('clients.id_key'), nullable=False)
+    client = relationship(
+        'ClientModel', back_populates='reviews', lazy='select',
+        )

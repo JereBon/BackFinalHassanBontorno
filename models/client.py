@@ -16,3 +16,4 @@ class ClientModel(BaseModel):
     addresses = relationship("AddressModel", back_populates="client", cascade="all, delete-orphan", lazy="select")
     orders = relationship("OrderModel", back_populates="client", lazy="select")
     bills = relationship("BillModel", back_populates="client", lazy="select")  # ✅ Added
+    reviews = relationship("ReviewModel", back_populates="client", lazy="select")

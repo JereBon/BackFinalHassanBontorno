@@ -9,9 +9,15 @@ if TYPE_CHECKING:
     from schemas.order_schema import OrderSchema
 
 
+
+class PublicClientSchema(BaseSchema):
+    """Public client data for reviews/comments."""
+    name: Optional[str] = None
+    lastname: Optional[str] = None
+
+
 class ClientSchema(BaseSchema):
     """Schema for Client entity with validations."""
-
     name: Optional[str] = Field(None, min_length=1, max_length=100, description="Client's first name")
     lastname: Optional[str] = Field(None, min_length=1, max_length=100, description="Client's last name")
     email: Optional[EmailStr] = Field(None, description="Client's email address")
