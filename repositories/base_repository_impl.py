@@ -75,7 +75,7 @@ class BaseRepositoryImpl(BaseRepository):
             self.logger.error(f"Error finding {self.model.__name__} with id {id_key}: {e}")
             raise
 
-    def find_all(self, skip: int = 0, limit: int = 100) -> List[BaseSchema]:
+    def find_all(self, skip: int = 0, limit: int = 100, filters: dict = None) -> List[BaseSchema]:
         """
         Find all records with pagination and input validation
 
@@ -85,6 +85,7 @@ class BaseRepositoryImpl(BaseRepository):
         Args:
             skip: Number of records to skip (must be >= 0)
             limit: Maximum number of records to return (must be 1-1000)
+            filters: Dictionary of filters to apply (key=column name, value=value)
 
         Returns:
             List of schema instances
@@ -113,7 +114,17 @@ class BaseRepositoryImpl(BaseRepository):
                 )
                 limit = PaginationConfig.MAX_LIMIT
 
-            stmt = select(self.model).offset(skip).limit(limit)
+            stmt = select(self.model)
+
+            # Apply filters if present
+            if filters:
+                for attr, value in filters.items():
+                    if hasattr(self.model, attr):
+                        stmt = stmt.where(getattr(self.model, attr) == value)
+                    else:
+                        self.logger.warning(f"Filter attribute {attr} not found in {self.model.__name__}")
+
+            stmt = stmt.offset(skip).limit(limit)
             models = self.session.scalars(stmt).all()
             return [self.schema.model_validate(model) for model in models]
 

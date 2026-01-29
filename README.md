@@ -833,11 +833,17 @@ POST /categories
 |--------|----------|-------------|------------|
 | GET | `/orders` | List all orders (paginated) | - |
 | GET | `/orders/{id}` | Get order by ID | - |
+| GET | `/orders/by_client/{id}` | Get orders by Client ID | - |
 | POST | `/orders` | Create new order | ✅ FK validation |
 | PUT | `/orders/{id}` | Update order | ✅ FK validation |
 | DELETE | `/orders/{id}` | Delete order | - |
 
 **Example:**
+```bash
+# Get orders for client 1
+GET /orders/by_client/1
+```
+
 ```bash
 # Create order (validates client_id and bill_id exist)
 POST /orders
@@ -938,6 +944,7 @@ POST /bills
 |--------|----------|-------------|
 | GET | `/reviews` | List all reviews |
 | GET | `/reviews/{id}` | Get review by ID |
+| GET | `/reviews/by_product/{id}` | Get reviews for a product |
 | POST | `/reviews` | Create new review |
 | PUT | `/reviews/{id}` | Update review |
 | DELETE | `/reviews/{id}` | Delete review |

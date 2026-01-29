@@ -28,6 +28,10 @@ class OrderService(BaseServiceImpl):
         self._client_repository = ClientRepository(db)
         self._bill_repository = BillRepository(db)
 
+    def get_by_client_id(self, client_id: int):
+        """Get all orders for a specific client."""
+        return self.repository.find_all(filters={'client_id': client_id})
+
     def save(self, schema: OrderSchema) -> OrderSchema:
         """
         Create a new order with validation
